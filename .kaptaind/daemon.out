@@ -15,3 +15,4 @@
 [2m2026-08-20T13:50:54.017849Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
 [2m2026-08-20T13:50:54.018000Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
 [2m2026-08-20T13:50:59.019461Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0m41eadbf2-0eb6-49cb-aeb7-633636554987
+[2m2026-08-20T13:55:55.691059Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0m747b320e-2aa8-4d28-bcfc-7b4c1a5c3c8b
