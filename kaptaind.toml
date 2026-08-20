@@ -18,10 +18,7 @@ r = 0.15
 
 [version_thresholds]
 minor = 0.6    # score at or above this bumps Minor
-patch = 0.0    # bootstrap-only: below-threshold "chore" commits never attempt
-               # a push (only a real bump does) — 0.0 forces this one bump-path
-               # commit through so the first push actually fires. Reverted
-               # right after.
+patch = 0.1    # score at or above this bumps Patch; below it, no commit
 
 [push]
 enabled = true

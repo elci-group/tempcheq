@@ -12,3 +12,6 @@
 [2m2026-08-20T13:49:43.262902Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
 [2m2026-08-20T13:49:48.264814Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0mb279419e-a575-4407-b948-d335d5aedaac
 [2m2026-08-20T13:49:48.375648Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m Token usage and cost tracking [3minput_tokens[0m[2m=[0m0 [3moutput_tokens[0m[2m=[0m51 [3mmarginal_cost[0m[2m=[0m0.0000765 [3maggregate_cost[0m[2m=[0m0.0036705
+[2m2026-08-20T13:50:54.017849Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
+[2m2026-08-20T13:50:54.018000Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
+[2m2026-08-20T13:50:59.019461Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0m41eadbf2-0eb6-49cb-aeb7-633636554987
