@@ -7,3 +7,7 @@
 [2m2026-08-20T13:35:01.953138Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m Angler system initialized
 [2m2026-08-20T13:35:01.963325Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m startup rescan: pending changes found, forming catch-up cluster [3mpaths[0m[2m=[0m7
 [2m2026-08-20T13:35:02.757443Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m Token usage and cost tracking [3minput_tokens[0m[2m=[0m7029 [3moutput_tokens[0m[2m=[0m53 [3mmarginal_cost[0m[2m=[0m0.003594 [3maggregate_cost[0m[2m=[0m0.003594
+[2m2026-08-20T13:35:02.799891Z[0m [33m WARN[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m push failed [3merror[0m[2m=[0mpush to protected branch 'main' is disabled by configuration
+[2m2026-08-20T13:35:55.401656Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
+[2m2026-08-20T13:35:55.401789Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
+[2m2026-08-20T13:36:00.404070Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0m3625bea2-ba08-4630-abaa-f7be0539aa5a

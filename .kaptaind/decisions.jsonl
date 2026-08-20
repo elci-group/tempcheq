@@ -1,0 +1,1 @@
+{"timestamp":"2026-08-20T13:35:02.797682623Z","cluster_id":"24eab066-8e78-423e-9bc6-b41f1cd91d15","outcome":"commit","scores":{"score":0.13616583,"api":0.0,"deps":0.3763889,"runtime":0.0},"thresholds":{"minor":0.6,"patch":0.1},"bump":"Patch","version":"0.1.1","reason":"committed","paths":[".gitignore",".kaptainignore","CLAUDE.md","Cargo.lock","Cargo.toml","kaptaind.toml","src"]}
