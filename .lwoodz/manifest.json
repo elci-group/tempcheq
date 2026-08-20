@@ -1,0 +1,461 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "creationInfo": {
+    "created": "2026-08-20T14:44:36.668258855+00:00",
+    "creators": [
+      "Tool: lwoodz-0.1.0",
+      "Person: elci-group"
+    ]
+  },
+  "dataLicense": "CC0-1.0",
+  "dependencies": [
+    {
+      "license": "MIT OR Apache-2.0",
+      "name": "anyhow",
+      "source": "cargo",
+      "spdx": "MIT OR Apache-2.0",
+      "version": "1"
+    },
+    {
+      "license": "MIT OR Apache-2.0",
+      "name": "clap",
+      "source": "cargo",
+      "spdx": "MIT OR Apache-2.0",
+      "version": "4"
+    },
+    {
+      "license": "CC0-1.0",
+      "name": "notify",
+      "source": "cargo",
+      "spdx": "CC0-1.0",
+      "version": "6"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "once_cell",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "owo-colors",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "4"
+    },
+    {
+      "license": "MIT OR Apache-2.0",
+      "name": "regex",
+      "source": "cargo",
+      "spdx": "MIT OR Apache-2.0",
+      "version": "1"
+    },
+    {
+      "license": "MIT OR Apache-2.0",
+      "name": "serde",
+      "source": "cargo",
+      "spdx": "MIT OR Apache-2.0",
+      "version": "1"
+    },
+    {
+      "license": "MIT OR Apache-2.0",
+      "name": "serde_json",
+      "source": "cargo",
+      "spdx": "MIT OR Apache-2.0",
+      "version": "1"
+    },
+    {
+      "license": "MIT OR Apache-2.0",
+      "name": "walkdir",
+      "source": "cargo",
+      "spdx": "MIT OR Apache-2.0",
+      "version": "2"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "aho-corasick",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.1.5"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "anstream",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.0"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "anstyle",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.14"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "anstyle-parse",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.0"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "anstyle-query",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.1.5"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "anstyle-wincon",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "3.0.11"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "bitflags",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.3.2"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "cfg-if",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.4"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "clap_builder",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "4.6.6"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "clap_derive",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "4.6.4"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "clap_lex",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.1.0"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "colorchoice",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.5"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "crossbeam-channel",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.5.16"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "crossbeam-utils",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.8.22"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "filetime",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.2.29"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "fsevent-sys",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "4.1.0"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "heck",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.5.0"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "inotify",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.9.6"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "inotify-sys",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.1.8"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "is_terminal_polyfill",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.70.2"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "itoa",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.18"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "kqueue",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.2.1"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "kqueue-sys",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.1.2"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "libc",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.2.189"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "log",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.4.33"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "memchr",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "2.8.3"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "mio",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.8.11"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "once_cell_polyfill",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.70.2"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "proc-macro2",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.107"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "quote",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.47"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "regex-automata",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.4.18"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "regex-syntax",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.8.11"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "same-file",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.6"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "serde_core",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.229"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "serde_derive",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.229"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "strsim",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.11.1"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "syn",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "3.0.3"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "tempcheq",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.1.2"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "unicode-ident",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.24"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "utf8parse",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.2.2"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "wasi",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.11.1+wasi-snapshot-preview1"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "winapi-util",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.1.11"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "windows-link",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.2.1"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "windows-sys",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.48.0"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "windows-targets",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.48.5"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "windows_aarch64_gnullvm",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.48.5"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "windows_aarch64_msvc",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.48.5"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "windows_i686_gnu",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.48.5"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "windows_i686_msvc",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.48.5"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "windows_x86_64_gnu",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.48.5"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "windows_x86_64_gnullvm",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.48.5"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "windows_x86_64_msvc",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "0.48.5"
+    },
+    {
+      "license": "NOASSERTION",
+      "name": "zmij",
+      "source": "cargo",
+      "spdx": "NOASSERTION",
+      "version": "1.0.23"
+    }
+  ],
+  "documentNamespace": "https://example.com/spdx/tempcheq",
+  "generatedBy": "lwoodz 0.1.0",
+  "name": "tempcheq",
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package",
+      "copyrightText": "Copyright (c) 2026 elci-group",
+      "downloadLocation": "NOASSERTION",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "name": "tempcheq"
+    }
+  ],
+  "spdxVersion": "SPDX-2.3"
+}
