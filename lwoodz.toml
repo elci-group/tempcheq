@@ -5,7 +5,7 @@
 [project]
 # SPDX identifier for the project. See https://spdx.org/licenses/
 license = "MIT"
-copyright_holder = "sal"
+copyright_holder = "elci-group"
 copyright_year = 2026
 project_name = "tempcheq"
 # copyright_holder_email = "you@example.com"

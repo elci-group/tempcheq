@@ -17,3 +17,4 @@
 [2m2026-08-20T13:50:59.019461Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0m41eadbf2-0eb6-49cb-aeb7-633636554987
 [2m2026-08-20T13:55:55.691059Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0m747b320e-2aa8-4d28-bcfc-7b4c1a5c3c8b
 [2m2026-08-20T14:05:46.559913Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0ma76abcf2-7b21-4767-bacc-29da4b4e8a81
+[2m2026-08-20T14:06:01.321058Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0m5804ff3f-236d-4b2d-bc03-b039bcfc0c7e
