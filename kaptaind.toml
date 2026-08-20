@@ -35,10 +35,7 @@ command = "cargo test"
 required = true
 
 [staging]
-# "all" here only for the initial bootstrap commit of a brand-new repo,
-# where every file predates the daemon so nothing is a cluster-observed
-# change yet. Switched back to "cluster" (the safe default) right after.
-mode = "all"
+mode = "cluster"
 # include = ["src/**"] # only used in "pattern" mode
 # exclude = ["*.log", ".env*"]
 
