@@ -1,0 +1,9 @@
+[2m2026-08-20T13:35:01.917465Z[0m [32m INFO[0m [2mkaptaind[0m[2m:[0m Starting kaptaind
+[2m2026-08-20T13:35:01.917529Z[0m [32m INFO[0m [2mkaptaind[0m[2m:[0m Watching repository at: /home/sal/tempcheq/
+[2m2026-08-20T13:35:01.917540Z[0m [33m WARN[0m [2mkaptaind[0m[2m:[0m staging mode "all" runs `git add -A` across the whole worktree: untracked files — including secrets — may be committed. Prefer mode = "cluster" (the default since v9.7.17). Commits abort fail-closed if a changed path matches the secret denylist.
+[2m2026-08-20T13:35:01.934853Z[0m [32m INFO[0m [2mkaptaind::daemon::health[0m[2m:[0m health server listening [3maddr[0m[2m=[0m127.0.0.1:9090
+[2m2026-08-20T13:35:01.952640Z[0m [32m INFO[0m [2mkaptaind::angler::git_hooks[0m[2m:[0m Installed 7 git hooks
+[2m2026-08-20T13:35:01.952713Z[0m [32m INFO[0m [2mkaptaind::angler[0m[2m:[0m Git hooks installed successfully
+[2m2026-08-20T13:35:01.953138Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m Angler system initialized
+[2m2026-08-20T13:35:01.963325Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m startup rescan: pending changes found, forming catch-up cluster [3mpaths[0m[2m=[0m7
+[2m2026-08-20T13:35:02.757443Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m Token usage and cost tracking [3minput_tokens[0m[2m=[0m7029 [3moutput_tokens[0m[2m=[0m53 [3mmarginal_cost[0m[2m=[0m0.003594 [3maggregate_cost[0m[2m=[0m0.003594
