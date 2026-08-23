@@ -107,6 +107,18 @@ pub fn discover(root: &Path) -> Result<Vec<InferenceAction>> {
     Ok(actions)
 }
 
+
+/// Build a multi-line context string for classification: up to `radius` lines
+/// before and after line index `i` (clamped to file bounds), joined with newlines.
+/// Wider context lets the classifier see surrounding variable names, function calls,
+/// and comments that reveal what kind of task the inference action is performing.
+fn context_window(lines: &[&str], i: usize) -> String {
+    const RADIUS: usize = 20;
+    let start = i.saturating_sub(RADIUS);
+    let end = (i + RADIUS + 1).min(lines.len());
+    lines[start..end].join("\n")
+}
+
 fn scan_file(
     root: &Path,
     path: &Path,
@@ -132,7 +144,7 @@ fn scan_file(
                 line: i + 1,
                 source_kind: kind,
                 temperature: TemperatureState::Explicit(val),
-                context: line.trim().to_string(),
+                context: context_window(&lines, i),
             });
             explained_lines.push(i);
         } else if let Some(cap) = ENV_TEMP_ASSIGN.captures(line) {
@@ -143,7 +155,7 @@ fn scan_file(
                 line: i + 1,
                 source_kind: SourceKind::EnvVar,
                 temperature: TemperatureState::Explicit(val),
-                context: line.trim().to_string(),
+                context: context_window(&lines, i),
             });
             explained_lines.push(i);
         }
@@ -159,7 +171,7 @@ fn scan_file(
                 line: i + 1,
                 source_kind: SourceKind::ApiCall,
                 temperature: TemperatureState::Inapplicable,
-                context: line.trim().to_string(),
+                context: context_window(&lines, i),
             });
             explained_lines.push(i);
         }
@@ -191,7 +203,7 @@ fn scan_file(
                     line: i + 1,
                     source_kind: *kind,
                     temperature: TemperatureState::Implicit,
-                    context: line.trim().to_string(),
+                    context: context_window(&lines, i),
                 });
                 explained_lines.push(i);
                 break;
@@ -212,7 +224,7 @@ fn scan_file(
                 line: i + 1,
                 source_kind: SourceKind::EnvVar,
                 temperature: TemperatureState::Implicit,
-                context: line.trim().to_string(),
+                context: context_window(&lines, i),
             });
         }
     }
