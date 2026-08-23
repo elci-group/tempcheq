@@ -77,9 +77,10 @@ struct Rule {
 
 const RULES: &[Rule] = &[
     Rule { class: TaskClass::Deterministic, weight: 1.0, keywords: &[
-        "extract", "extraction", "parse", "parsing", "json_schema", "structured_output",
-        "regex", "classif", "categoriz", "categoris", "label", "ner", "entity",
-        "validate", "validator", "deterministic",
+        "extract", "extraction", "parse", "parsing", "parse_analysis", "json_schema",
+        "structured_output", "regex", "classif", "categoriz", "categoris", "label",
+        "ner", "entity", "validate", "validator", "deterministic",
+        "analyze", "analysis", "pattern", "infer", "inference",
     ]},
     Rule { class: TaskClass::ToolSelection, weight: 1.0, keywords: &[
         "tool_choice", "tool-selection", "tool_selection", "function_call", "router",
