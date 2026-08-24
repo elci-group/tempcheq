@@ -1,0 +1,30 @@
+[[file]]
+path = "src/thermal.rs"
+required = true
+min_size_bytes = 4000
+require_regex = ["ThermalProcess", "ThermalState", "calculate_scale", "normalize_entries"]
+forbid_regex = ["TODO", "FIXME", "unimplemented!"]
+
+[[file]]
+path = "src/export.rs"
+required = true
+require_regex = ["thermometer-array", "ideal-marker", "prefers-reduced-motion", "TempCheqThermal"]
+forbid_regex = ["TODO", "FIXME", "unimplemented!"]
+
+[[command]]
+name = "cargo test"
+cmd = ["cargo", "test"]
+expect_exit = 0
+timeout_secs = 180
+stdout_contains = ["test result: ok"]
+
+[[command]]
+name = "thermal HTML report"
+cmd = ["cargo", "run", "--quiet", "--", "report", "/home/sal/brandi", "--out", "/tmp/tempcheq-thermal-deliver", "--format", "html"]
+expect_exit = 0
+timeout_secs = 180
+stdout_contains = ["TempCheq report written"]
+
+[git]
+no_uncommitted_changes = false
+no_untracked_files = false
