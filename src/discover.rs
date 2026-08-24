@@ -322,20 +322,21 @@ fn classify_source_kind(path: &Path, ext: &str, is_workflow: bool, line: &str) -
 /// Look backward from line `i` for the nearest identifier-bearing line to
 /// use as a human-readable action name; fall back to `<file-stem>#<line>`.
 fn nearest_name(lines: &[&str], i: usize, rel: &Path) -> String {
-    let look_back = i.saturating_sub(25);
+    let local_look_back = i.saturating_sub(25);
+    let scope_look_back = i.saturating_sub(100);
 
     // Prefer the nearest enclosing function/def/class/struct name — it's
     // a far more useful label than an arbitrary sibling key, and without
     // this pass a JS/JSON object field like `messages:` sitting between
     // the temperature line and its enclosing `function foo(...)` would
     // get picked up first by the key-hint pass below.
-    for j in (look_back..=i).rev() {
+    for j in (scope_look_back..=i).rev() {
         if let Some(cap) = SCOPE_NAME_HINT.captures(lines[j]) {
             return cap[1].to_string();
         }
     }
 
-    for j in (look_back..=i).rev() {
+    for j in (local_look_back..=i).rev() {
         if let Some(cap) = JSON_KEY_HINT.captures(lines[j]) {
             let key = cap[1].trim();
             if !key.eq_ignore_ascii_case("temperature") && !key.is_empty() {
@@ -358,7 +359,7 @@ fn nearest_name(lines: &[&str], i: usize, rel: &Path) -> String {
             }
         }
     }
-    for j in (look_back..=i).rev() {
+    for j in (local_look_back..=i).rev() {
         if let Some(cap) = VALUE_NAME_HINT.captures(lines[j]) {
             return cap[1].to_string();
         }
@@ -396,6 +397,24 @@ mod tests {
         assert_eq!(actions[0].name, "model_plan");
         assert_eq!(actions[0].source_kind, SourceKind::ShellWrapper);
         assert!(matches!(actions[0].temperature, TemperatureState::Implicit));
+    }
+
+    #[test]
+    fn names_calls_from_enclosing_functions_beyond_local_context() {
+        let mut source = String::from("fn long_model_plan() {\n");
+        for index in 0..30 {
+            source.push_str(&format!("    let field_{index} = {index};\n"));
+        }
+        source.push_str(
+            r#"    let body = serde_json::json!({"model":"demo"});
+    let endpoint = "https://api.openai.com/v1/responses";
+    let output = Command::new("curl").arg(endpoint).output();
+}"#,
+        );
+
+        let actions = scan_rust(&source);
+        assert_eq!(actions.len(), 1);
+        assert_eq!(actions[0].name, "long_model_plan");
     }
 
     #[test]
