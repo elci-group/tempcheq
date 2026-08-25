@@ -291,6 +291,11 @@ fn verdict_badge(verdict: Option<f32>) -> String {
 }
 
 pub fn render_html(root: &Path, entries: &[Entry], title: Option<&str>) -> String {
+    crate::thermal_html::render_html(root, entries, title)
+}
+
+#[allow(dead_code)]
+fn render_legacy_html(root: &Path, entries: &[Entry], title: Option<&str>) -> String {
     let s = summarize(entries);
     let (flagged, rest) = split_and_sort(entries);
     let ccounts = class_counts(entries);

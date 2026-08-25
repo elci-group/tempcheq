@@ -8,6 +8,8 @@ mod fix;
 mod hypothesize;
 mod report;
 mod run;
+mod thermal;
+mod thermal_html;
 mod watch;
 
 use anyhow::{bail, Result};

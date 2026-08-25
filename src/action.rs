@@ -9,6 +9,10 @@ pub struct InferenceAction {
     pub line: usize,
     pub source_kind: SourceKind,
     pub temperature: TemperatureState,
+    /// Decimal places present in the source literal, when the value was
+    /// explicit. Report renderers use this to avoid silently discarding
+    /// source precision.
+    pub temperature_precision: Option<usize>,
     pub context: String,
 }
 

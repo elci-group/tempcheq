@@ -222,6 +222,7 @@ struct ReportAction {
     line: usize,
     source_kind: String,
     temperature: Option<f32>,
+    temperature_precision: Option<usize>,
     temperature_state: String,
     class: String,
     band_low: f32,
@@ -253,6 +254,7 @@ pub fn build_json_report(root: &Path, entries: &[Entry]) -> serde_json::Value {
             line: e.action.line,
             source_kind: e.action.source_kind.label().to_string(),
             temperature: e.action.temperature.value(),
+            temperature_precision: e.action.temperature_precision,
             temperature_state: match e.action.temperature {
                 TemperatureState::Explicit(_) => "explicit".to_string(),
                 TemperatureState::Implicit => "implicit".to_string(),

@@ -1,0 +1,31 @@
+{
+  "next_id": 2,
+  "instances": [
+    {
+      "id": 0,
+      "action": "create_file",
+      "triggered_at": 1787610132,
+      "params": {
+        "path": "src/thermal.rs"
+      },
+      "steps_done": [
+        "populate",
+        "save"
+      ],
+      "facts": {}
+    },
+    {
+      "id": 1,
+      "action": "create_file",
+      "triggered_at": 1787610132,
+      "params": {
+        "path": "deliver.toml"
+      },
+      "steps_done": [
+        "populate",
+        "save"
+      ],
+      "facts": {}
+    }
+  ]
+}
