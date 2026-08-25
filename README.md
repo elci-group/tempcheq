@@ -67,6 +67,27 @@ tempcheq report .                          # writes tempcheq-report/{report.md,r
 tempcheq report . --out audit --format html --title "Q3 Inference Audit"
 ```
 
+The HTML report is a self-contained thermal instrumentation console. Each
+detected inference action becomes a thermometer with its explicit sampling
+temperature, estimated ideal, heuristic operating band, deviation, source
+identity, confidence, and availability state. One action renders as a hero
+instrument; larger audits automatically become responsive arrays and scalable
+monitoring walls with state filters, search, and severity/temperature sorting.
+
+Scales are calculated independently per action from the actual value, ideal,
+and estimated band using stable, rounded tick intervals and presentation
+margins. Their bounds are labeled as display geometry—not safety limits—and
+TempCheq never invents a critical threshold. Sampling temperature is
+dimensionless, so the UI labels it `unitless`. Implicit provider defaults and
+inapplicable actions remain visible as UNKNOWN/OFFLINE instruments rather than
+displaying fabricated readings.
+
+The report has no external assets or network dependencies. Animation uses CSS
+and a small shared controller (`window.TempCheqThermal`) for fluid/readout
+transitions and future live updates; reduced-motion, keyboard navigation,
+semantic labels, light/dark presentation, empty states, and print output are
+built in.
+
 Both files are generated deterministically — the same codebase produces byte-identical output on
 every run, so two reports from the same commit diff as empty. The HTML is a single self-contained
 file (inline CSS and SVG bar charts, no external requests); the Markdown uses Unicode block-bar

@@ -181,6 +181,10 @@ fn render_instrument(process: &ThermalProcess, index: usize) -> String {
     } else {
         "NO EXPLICIT VALUE".to_string()
     };
+    let freshness = process
+        .freshness
+        .as_deref()
+        .unwrap_or("STATIC AUDIT · FRESHNESS N/A");
     let aria = format!(
         "{}. State {}. Actual {}. Target {}. Estimated operating band {} to {}. Deviation {}.",
         process.name,
@@ -207,7 +211,7 @@ fn render_instrument(process: &ThermalProcess, index: usize) -> String {
   <div class="tube-zone">{range}<div class="tube"><div class="tube-depth"></div><div class="fluid {fluid_state}" style="--fill:{actual_pct:.3}%"><i></i></div></div><div class="bulb"><i></i></div>{ideal_marker}{actual_marker}</div>
   <div class="reference-rail"><div><span>ACTUAL</span><strong class="rail-actual">{reading_label}</strong></div><div><span>TARGET</span><strong>{ideal}</strong></div><div><span>EST. BAND</span><strong>{band}</strong></div><div><span>CONFIDENCE</span><strong>{confidence:.0}%</strong></div></div>
 </div>
-<div class="instrument-status"><span class="direction" aria-hidden="true">{direction}</span><div><b>{state_label}</b><span>{state_detail}</span></div><span class="freshness">STATIC AUDIT<br>FRESHNESS N/A</span></div>
+<div class="instrument-status"><span class="direction" aria-hidden="true">{direction}</span><div><b>{state_label}</b><span>{state_detail}</span></div><span class="freshness">{freshness}</span></div>
 <details class="instrument-details"><summary>PROCESS DETAIL <span>↗</span></summary><dl><div><dt>Source kind</dt><dd>{source_kind}</dd></div><div><dt>Task class</dt><dd>{task_class}</dd></div><div><dt>Identifier</dt><dd>{id}</dd></div><div><dt>Critical threshold</dt><dd>Not supplied</dd></div></dl><ul>{reasons}</ul></details>
 </article>"#,
         state = state,
@@ -261,6 +265,7 @@ fn render_instrument(process: &ThermalProcess, index: usize) -> String {
             ThermalState::Critical => "AUTHORITATIVE CRITICAL LIMIT EXCEEDED",
             ThermalState::Unknown => "ACTUAL READING UNAVAILABLE",
         },
+        freshness = esc(freshness),
         source_kind = esc(&process.source_kind),
         task_class = esc(&process.task_class),
         reasons = reasons,

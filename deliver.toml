@@ -6,7 +6,7 @@ require_regex = ["ThermalProcess", "ThermalState", "calculate_scale", "normalize
 forbid_regex = ["TODO", "FIXME", "unimplemented!"]
 
 [[file]]
-path = "src/export.rs"
+path = "src/thermal_html.rs"
 required = true
 require_regex = ["thermometer-array", "ideal-marker", "prefers-reduced-motion", "TempCheqThermal"]
 forbid_regex = ["TODO", "FIXME", "unimplemented!"]
