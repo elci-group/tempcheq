@@ -168,6 +168,7 @@ fn scan_file(
                 line: i + 1,
                 source_kind: kind,
                 temperature: TemperatureState::Explicit(val),
+                temperature_precision: Some(decimal_places(&cap[1])),
                 context: context_window(&lines, i),
             });
             explained_lines.push(i);
@@ -179,6 +180,7 @@ fn scan_file(
                 line: i + 1,
                 source_kind: SourceKind::EnvVar,
                 temperature: TemperatureState::Explicit(val),
+                temperature_precision: Some(decimal_places(&cap[2])),
                 context: context_window(&lines, i),
             });
             explained_lines.push(i);
@@ -195,6 +197,7 @@ fn scan_file(
                 line: i + 1,
                 source_kind: SourceKind::ApiCall,
                 temperature: TemperatureState::Inapplicable,
+                temperature_precision: None,
                 context: context_window(&lines, i),
             });
             explained_lines.push(i);
@@ -238,6 +241,7 @@ fn scan_file(
             line: i + 1,
             source_kind: kind,
             temperature: TemperatureState::Implicit,
+            temperature_precision: None,
             context: context_window(&lines, i),
         });
         explained_lines.push(i);
@@ -256,10 +260,15 @@ fn scan_file(
                 line: i + 1,
                 source_kind: SourceKind::EnvVar,
                 temperature: TemperatureState::Implicit,
+                temperature_precision: None,
                 context: context_window(&lines, i),
             });
         }
     }
+}
+
+fn decimal_places(raw: &str) -> usize {
+    raw.split_once('.').map(|(_, tail)| tail.len()).unwrap_or(0)
 }
 
 fn multiline_http_call_kind(lines: &[&str], i: usize, ext: &str) -> Option<SourceKind> {
@@ -460,5 +469,18 @@ fn render_documentation() {
 
         assert_eq!(actions.len(), 1);
         assert!(matches!(actions[0].temperature, TemperatureState::Explicit(value) if value == 0.2));
+        assert_eq!(actions[0].temperature_precision, Some(1));
+    }
+
+    #[test]
+    fn preserves_trailing_decimal_precision_from_source() {
+        let actions = scan_rust(
+            r#"fn answer() {
+    let body = serde_json::json!({"model":"demo","temperature":0.20});
+}"#,
+        );
+
+        assert_eq!(actions.len(), 1);
+        assert_eq!(actions[0].temperature_precision, Some(2));
     }
 }
