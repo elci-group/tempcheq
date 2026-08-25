@@ -157,10 +157,7 @@ fn render_instrument(process: &ThermalProcess, index: usize) -> String {
         .iter()
         .map(|reason| format!("<li>{}</li>", esc(reason)))
         .collect::<String>();
-    let actual_data = process
-        .actual
-        .map(|v| v.to_string())
-        .unwrap_or_default();
+    let actual_data = process.actual.map(|v| v.to_string()).unwrap_or_default();
     let ideal_data = process.ideal.map(|v| v.to_string()).unwrap_or_default();
     let low_data = process
         .operating_min
@@ -242,13 +239,18 @@ fn render_instrument(process: &ThermalProcess, index: usize) -> String {
         display_max = format_value(process.scale.display_max, tick_precision),
         display_min = format_value(process.scale.display_min, tick_precision),
         range = range,
-        fluid_state = if process.actual.is_some() { "" } else { "fluid--offline" },
+        fluid_state = if process.actual.is_some() {
+            ""
+        } else {
+            "fluid--offline"
+        },
         ideal_marker = ideal_marker,
         actual_marker = actual_marker,
         reading_label = esc(&reading_label),
         ideal = esc(&ideal),
         band = match (process.operating_min, process.operating_max) {
-            (Some(low), Some(high)) => format!("{}—{}", format_value(low, 2), format_value(high, 2)),
+            (Some(low), Some(high)) =>
+                format!("{}—{}", format_value(low, 2), format_value(high, 2)),
             _ => "UNAVAILABLE".to_string(),
         },
         confidence = process.confidence * 100.0,

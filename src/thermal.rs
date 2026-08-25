@@ -146,23 +146,9 @@ pub fn normalize_entries(entries: &[Entry]) -> Vec<ThermalProcess> {
             // TempCheq currently has no authoritative critical threshold. Do
             // not infer one from the heuristic band and mislabel it as safety.
             let critical_high = None;
-            let deviation = actual
-                .zip(ideal)
-                .map(|(a, i)| a - i)
-                .and_then(finite_value);
-            let state = classify_state(
-                actual,
-                operating_min,
-                operating_max,
-                critical_high,
-            );
-            let scale = calculate_scale(
-                actual,
-                ideal,
-                operating_min,
-                operating_max,
-                critical_high,
-            );
+            let deviation = actual.zip(ideal).map(|(a, i)| a - i).and_then(finite_value);
+            let state = classify_state(actual, operating_min, operating_max, critical_high);
+            let scale = calculate_scale(actual, ideal, operating_min, operating_max, critical_high);
             let precision = entry.action.temperature_precision.unwrap_or(2).min(6);
 
             ThermalProcess {
@@ -288,8 +274,7 @@ pub fn calculate_scale(
             for minor_index in 1..4 {
                 ticks.push(ScaleTick {
                     value: major_value + step * minor_index as f32 / 4.0,
-                    percent: ((major_index as f32 + minor_index as f32 / 4.0)
-                        / intervals as f32)
+                    percent: ((major_index as f32 + minor_index as f32 / 4.0) / intervals as f32)
                         * 100.0,
                     major: false,
                 });
@@ -341,7 +326,11 @@ pub fn format_value(value: f32, precision: usize) -> String {
 }
 
 fn normalized_zero(value: f32) -> f32 {
-    if value.abs() < 0.000_000_5 { 0.0 } else { value }
+    if value.abs() < 0.000_000_5 {
+        0.0
+    } else {
+        value
+    }
 }
 
 #[cfg(test)]
