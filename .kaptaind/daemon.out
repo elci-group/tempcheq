@@ -1,23 +1,27 @@
-[2m2026-08-20T13:43:39.842812Z[0m [32m INFO[0m [2mkaptaind[0m[2m:[0m Starting kaptaind
-[2m2026-08-20T13:43:39.842858Z[0m [32m INFO[0m [2mkaptaind[0m[2m:[0m Watching repository at: /home/sal/tempcheq/
-[2m2026-08-20T13:43:39.842867Z[0m [33m WARN[0m [2mkaptaind[0m[2m:[0m staging mode "all" runs `git add -A` across the whole worktree: untracked files — including secrets — may be committed. Prefer mode = "cluster" (the default since v9.7.17). Commits abort fail-closed if a changed path matches the secret denylist.
-[2m2026-08-20T13:43:39.844205Z[0m [32m INFO[0m [2mkaptaind::daemon::health[0m[2m:[0m health server listening [3maddr[0m[2m=[0m127.0.0.1:9090
-[2m2026-08-20T13:43:39.865310Z[0m [32m INFO[0m [2mkaptaind::angler::git_hooks[0m[2m:[0m Installed 7 git hooks
-[2m2026-08-20T13:43:39.865351Z[0m [32m INFO[0m [2mkaptaind::angler[0m[2m:[0m Git hooks installed successfully
-[2m2026-08-20T13:43:39.865362Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m Angler system initialized
-[2m2026-08-20T13:45:18.774647Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
-[2m2026-08-20T13:45:18.774794Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
-[2m2026-08-20T13:45:23.776334Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0mb1184230-c606-4e7c-8dc5-585a4db31824
-[2m2026-08-20T13:49:43.262779Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
-[2m2026-08-20T13:49:43.262902Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
-[2m2026-08-20T13:49:48.264814Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0mb279419e-a575-4407-b948-d335d5aedaac
-[2m2026-08-20T13:49:48.375648Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m Token usage and cost tracking [3minput_tokens[0m[2m=[0m0 [3moutput_tokens[0m[2m=[0m51 [3mmarginal_cost[0m[2m=[0m0.0000765 [3maggregate_cost[0m[2m=[0m0.0036705
-[2m2026-08-20T13:50:54.017849Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
-[2m2026-08-20T13:50:54.018000Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m config reloaded: thresholds, weights, rate limits, ignore matcher
-[2m2026-08-20T13:50:59.019461Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0m41eadbf2-0eb6-49cb-aeb7-633636554987
-[2m2026-08-20T13:55:55.691059Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0m747b320e-2aa8-4d28-bcfc-7b4c1a5c3c8b
-[2m2026-08-20T14:05:46.559913Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0ma76abcf2-7b21-4767-bacc-29da4b4e8a81
-[2m2026-08-20T14:06:01.321058Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0m5804ff3f-236d-4b2d-bc03-b039bcfc0c7e
-[2m2026-08-20T14:43:40.562666Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
-[2m2026-08-20T14:44:41.750057Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m cluster window expired by timeout [3mcluster_id[0m[2m=[0m2f498100-c337-4aab-b1ff-fde350300725
-[2m2026-08-20T14:44:42.052237Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m Token usage and cost tracking [3minput_tokens[0m[2m=[0m4445 [3moutput_tokens[0m[2m=[0m53 [3mmarginal_cost[0m[2m=[0m0.0023020000000000002 [3maggregate_cost[0m[2m=[0m0.0059725
+[2m2026-05-14T13:42:12.039024Z[0m [32m INFO[0m [2mkaptaind[0m[2m:[0m Starting kaptaind
+[2m2026-05-14T13:42:12.039178Z[0m [32m INFO[0m [2mkaptaind[0m[2m:[0m Watching repository at: /home/sal/tempcheq/
+[2m2026-05-14T13:42:12.052336Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m capability network_push is disabled
+[2m2026-05-14T13:42:12.052422Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m capability network_webhooks is disabled
+[2m2026-05-14T13:42:12.052454Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m capability network_inference is disabled
+[2m2026-05-14T13:42:12.052473Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m capability bundle_scoring is disabled
+[2m2026-05-14T13:42:12.052489Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m capability external_plugins is disabled
+[2m2026-05-14T13:42:12.053446Z[0m [32m INFO[0m [2mkaptaind::daemon::health[0m[2m:[0m health server listening [3maddr[0m[2m=[0m127.0.0.1:3184
+[2m2026-05-14T13:42:12.487318Z[0m [32m INFO[0m [2mkaptaind::angler::git_hooks[0m[2m:[0m Installed 7 git hooks
+[2m2026-05-14T13:42:12.487446Z[0m [32m INFO[0m [2mkaptaind::angler[0m[2m:[0m Git hooks installed successfully
+[2m2026-05-14T13:42:12.487493Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m Angler system initialized
+[2m2026-08-29T13:13:53.519695Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-29T14:13:53.514178Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-29T15:13:53.514866Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-29T16:13:53.514486Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-29T17:13:53.515689Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-29T18:13:53.524649Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-29T19:13:53.523960Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-29T20:13:53.517872Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-29T21:32:46.880063Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-29T22:57:46.630676Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-30T07:53:16.153402Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-30T11:44:23.832815Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m pruned analysis artifacts [3mdeleted[0m[2m=[0m0 [3merrors[0m[2m=[0m0
+[2m2026-08-30T13:21:57.624504Z[0m [32m INFO[0m [2mkaptaind::daemon::runtime[0m[2m:[0m SIGTERM received, initiating graceful shutdown
+[2m2026-08-30T13:21:57.626412Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m shutdown signal received, draining tasks
+[2m2026-08-30T13:22:22.630139Z[0m [33m WARN[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m task drain timeout (25s), aborting remaining tasks
+[2m2026-08-30T13:22:22.631295Z[0m [32m INFO[0m [2mkaptaind::daemon::scheduler[0m[2m:[0m scheduler shutdown complete
