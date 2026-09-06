@@ -11,6 +11,7 @@ mod report;
 mod run;
 mod thermal;
 mod thermal_html;
+mod update;
 mod watch;
 
 use anyhow::{bail, Result};
@@ -23,6 +24,9 @@ fn __curly_original_main() -> Result<()> {
 
     if let Some(Command::Report(args)) = cli.command {
         return run_report(args);
+    }
+    if let Some(Command::Update) = cli.command {
+        return update::run();
     }
 
     if !cli.path.exists() {

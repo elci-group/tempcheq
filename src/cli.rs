@@ -52,6 +52,8 @@ pub struct Cli {
 pub enum Command {
     /// Generate deterministic Markdown/HTML report files for a workspace.
     Report(ReportArgs),
+    /// Clone the latest tempcheq source and install it with `baby --user`.
+    Update,
 }
 
 #[derive(Args, Debug)]
