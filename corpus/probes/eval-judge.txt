@@ -1,0 +1,2 @@
+def judge_eval_candidate(answer):
+    return client.chat.completions.create(model='m', messages=answer, temperature=0.7)

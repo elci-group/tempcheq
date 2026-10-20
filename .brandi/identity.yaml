@@ -1,0 +1,10 @@
+product:
+  name: Tempcheq
+  tagline: "Calibrate the heat."
+  mission: "Audit and tune inference temperature so a model's output is exactly as creative — or exact — as the task demands."
+  aliases: []
+  former_names: []
+archetype: ["technician", "calibrator", "alchemist"]
+terminology:
+  canonical: {}
+  banned_variants: {}

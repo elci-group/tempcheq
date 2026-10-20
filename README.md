@@ -115,13 +115,19 @@ line-based rather than AST-based scanning — live in `CLAUDE.md`.
 
 ## Known limitations
 
-- Detection is regex/line-based, not AST-based. A `"model":` key anywhere in a JSON/YAML/TOML file
-  is treated as a possible inference call site, which can false-positive on unrelated config or log
-  data (a `data-model` schema, an archived transcript file, etc.).
-- `--benchmark` is a clearly-labeled simulation seeded from the same heuristic prior used for the
-  recommendation, not a real provider-grounded measurement.
-- No automated test suite yet; correctness has been validated through targeted manual and scripted
-  repro against fixture codebases.
+- Detection is regex/line-based, not AST-based. To cut the worst false
+  positives, the scanner suppresses comment-only lines and block comments,
+  regex pattern-definition lines, and Rust `#[test]`/`#[cfg(test)]` regions by
+  default (`--include-tests` re-includes test regions — use it when auditing
+  eval-harness code where fixtures are legitimately in scope). Residual
+  classes remain: a `"model":` key anywhere in a JSON/YAML/TOML file is still
+  treated as a possible inference call site (a `data-model` schema, an
+  archived transcript, etc.), as are inline trailing comments. See
+  `docs/directives/TD-001-false-flag-suppression.md`.
+- `--benchmark` is a clearly-labeled simulation seeded from the same heuristic
+  prior used for the recommendation, not a real provider-grounded measurement.
+- No automated benchmark of recommendation quality yet; a provider-grounded
+  impact benchmark is specified in `docs/benchmark-design.md`.
 
 ## License
 

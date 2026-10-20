@@ -1,0 +1,2 @@
+def chat_conversation_reply(turn):
+    return client.chat.completions.create(model='m', messages=turn, temperature=0.7)

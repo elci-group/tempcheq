@@ -1,0 +1,2 @@
+def digest_long_document(doc):
+    return client.chat.completions.create(model='m', messages=doc, temperature=0.7)

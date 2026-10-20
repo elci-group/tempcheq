@@ -1,0 +1,2 @@
+def synthesize_brief_report(memos):
+    return client.chat.completions.create(model='m', messages=memos, temperature=0.7)

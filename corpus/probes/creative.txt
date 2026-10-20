@@ -1,0 +1,2 @@
+def creative_story_names(topic):
+    return client.chat.completions.create(model='m', messages=topic, temperature=0.7)

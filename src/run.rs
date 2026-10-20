@@ -9,10 +9,11 @@ pub struct RunOptions {
     pub explain: bool,
     pub benchmark: bool,
     pub json: bool,
+    pub include_tests: bool,
 }
 
-pub fn build_entries(root: &Path) -> Result<Vec<Entry>> {
-    let actions = discover(root)?;
+pub fn build_entries(root: &Path, include_tests: bool) -> Result<Vec<Entry>> {
+    let actions = discover(root, include_tests)?;
     Ok(actions
         .into_iter()
         .map(|action| {
@@ -23,7 +24,7 @@ pub fn build_entries(root: &Path) -> Result<Vec<Entry>> {
 }
 
 pub fn run_audit(root: &Path, opts: &RunOptions) -> Result<()> {
-    let mut entries = build_entries(root)?;
+    let mut entries = build_entries(root, opts.include_tests)?;
     entries.sort_by(|a, b| {
         a.action
             .file

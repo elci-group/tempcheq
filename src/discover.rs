@@ -95,7 +95,7 @@ static EMBEDDING_MARKER: Lazy<Regex> = Lazy::new(|| {
     Regex::new(r"\.embeddings\.create\(|embed_documents\(|embed_query\(|EmbeddingModel\(").unwrap()
 });
 
-pub fn discover(root: &Path) -> Result<Vec<InferenceAction>> {
+pub fn discover(root: &Path, include_tests: bool) -> Result<Vec<InferenceAction>> {
     let mut actions = Vec::new();
 
     for entry in WalkDir::new(root)
@@ -125,7 +125,7 @@ pub fn discover(root: &Path) -> Result<Vec<InferenceAction>> {
         let Ok(content) = std::fs::read_to_string(path) else {
             continue;
         };
-        scan_file(root, path, &content, is_workflow, &mut actions);
+        scan_file(root, path, &content, is_workflow, include_tests, &mut actions);
     }
 
     Ok(actions)
@@ -148,16 +148,24 @@ fn scan_file(
     path: &Path,
     content: &str,
     is_workflow: bool,
+    include_tests: bool,
     out: &mut Vec<InferenceAction>,
 ) {
     let lines: Vec<&str> = content.lines().collect();
     let rel = path.strip_prefix(root).unwrap_or(path).to_path_buf();
     let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
 
+    // TD-001: per-line suppression mask (comments, regex pattern
+    // definitions, Rust test regions) computed before every pass.
+    let mask = build_suppression_mask(&lines, ext, include_tests);
+
     let mut explained_lines: Vec<usize> = Vec::new();
 
     // Pass 1: explicit temperature values (key:value or builder syntax).
     for (i, line) in lines.iter().enumerate() {
+        if mask[i] {
+            continue;
+        }
         if let Some(cap) = EXPLICIT_TEMP.captures(line).or_else(|| BUILDER_TEMP.captures(line)) {
             let Ok(val) = cap[1].parse::<f32>() else { continue };
             let kind = classify_source_kind(path, ext, is_workflow, line);
@@ -189,6 +197,9 @@ fn scan_file(
 
     // Pass 2: embedding / deterministic-decoding call sites -> inapplicable.
     for (i, line) in lines.iter().enumerate() {
+        if mask[i] {
+            continue;
+        }
         if EMBEDDING_MARKER.is_match(line) {
             let name = nearest_name(&lines, i, &rel);
             out.push(InferenceAction {
@@ -209,7 +220,7 @@ fn scan_file(
     // pair an inference endpoint with a nearby HTTP transport invocation so
     // formatted, builder-style, and helper-wrapped calls are not missed.
     for (i, line) in lines.iter().enumerate() {
-        if explained_lines.contains(&i) {
+        if explained_lines.contains(&i) || mask[i] {
             continue;
         }
         let matched_kind = CALL_MARKERS
@@ -221,16 +232,21 @@ fn scan_file(
                     marker.is_match(line).then_some(*kind)
                 }
             })
-            .or_else(|| multiline_http_call_kind(&lines, i, ext));
+            .or_else(|| multiline_http_call_kind(&lines, &mask, i, ext));
 
         let Some(kind) = matched_kind else {
             continue;
         };
         let window_start = i.saturating_sub(10);
         let window_end = (i + 11).min(lines.len());
+        // R-5 (TD-001): suppressed lines (e.g. a comment mentioning
+        // temperature) must not mask a real call site beside them.
         let nearby_has_temp = lines[window_start..window_end]
             .iter()
-            .any(|l| EXPLICIT_TEMP.is_match(l) || BUILDER_TEMP.is_match(l));
+            .zip(&mask[window_start..window_end])
+            .any(|(l, suppressed)| {
+                !*suppressed && (EXPLICIT_TEMP.is_match(l) || BUILDER_TEMP.is_match(l))
+            });
         if nearby_has_temp {
             continue;
         }
@@ -250,7 +266,7 @@ fn scan_file(
     // Pass 4: env var references without an inline default (e.g.
     // `os.environ.get("TEMPERATURE")`) become implicit actions too.
     for (i, line) in lines.iter().enumerate() {
-        if explained_lines.contains(&i) {
+        if explained_lines.contains(&i) || mask[i] {
             continue;
         }
         if let Some(cap) = ENV_TEMP_REF.captures(line) {
@@ -271,14 +287,136 @@ fn decimal_places(raw: &str) -> usize {
     raw.split_once('.').map(|(_, tail)| tail.len()).unwrap_or(0)
 }
 
-fn multiline_http_call_kind(lines: &[&str], i: usize, ext: &str) -> Option<SourceKind> {
-    if is_config_ext(ext) || !INFERENCE_ENDPOINT.is_match(lines[i]) {
+/// Languages whose comment syntax the scanner can suppress reliably
+/// (TD-001 R-2). C-family uses `//` and `/* */`; hash-family uses `#`.
+/// Unknown extensions are scanned unsuppressed (conservative default).
+fn line_comment_token(ext: &str) -> Option<&'static str> {
+    match ext {
+        "rs" | "js" | "ts" | "tsx" | "jsx" | "go" => Some("//"),
+        "py" | "sh" | "bash" | "zsh" | "yml" | "yaml" | "toml" | "cfg" | "ini" | "env" | "rb" => {
+            Some("#")
+        }
+        _ => None,
+    }
+}
+
+fn is_c_family(ext: &str) -> bool {
+    matches!(ext, "rs" | "js" | "ts" | "tsx" | "jsx" | "go")
+}
+
+/// A line constructing a regex literal is a pattern definition, not an
+/// inference call site (TD-001 S2).
+fn is_pattern_definition(trimmed: &str) -> bool {
+    trimmed.contains("Regex::new(")
+        || trimmed.contains("re.compile(")
+        || trimmed.contains("new RegExp(")
+}
+
+const TEST_ATTRS: &[&str] = &[
+    "#[test]",
+    "#[tokio::test]",
+    "#[async_std::test]",
+    "#[cfg(test)]",
+];
+
+fn is_test_attribute(trimmed: &str) -> bool {
+    TEST_ATTRS.iter().any(|a| trimmed.starts_with(a))
+}
+
+/// Build the per-line suppression mask (TD-001). `mask[i]` is true when
+/// line `i` is comment-only or inside a block comment (S1), defines a
+/// regex pattern (S2), or sits inside a Rust test region (S3, governed by
+/// `include_tests`). Deterministic; O(lines) with no per-call allocation.
+fn build_suppression_mask(lines: &[&str], ext: &str, include_tests: bool) -> Vec<bool> {
+    let mut mask = vec![false; lines.len()];
+    let comment_tok = line_comment_token(ext);
+
+    // S1: comment-only lines and block comments; S2: pattern definitions.
+    let mut in_block = false;
+    for (i, line) in lines.iter().enumerate() {
+        let trimmed = line.trim_start();
+        if is_c_family(ext) {
+            if in_block {
+                mask[i] = true;
+                if trimmed.contains("*/") {
+                    in_block = false;
+                }
+                continue;
+            }
+            if trimmed.starts_with("/*") {
+                mask[i] = true;
+                if !trimmed.contains("*/") {
+                    in_block = true;
+                }
+                continue;
+            }
+        }
+        if let Some(tok) = comment_tok {
+            if trimmed.starts_with(tok) {
+                mask[i] = true;
+                continue;
+            }
+        }
+        if is_pattern_definition(trimmed) {
+            mask[i] = true;
+        }
+    }
+
+    // S3: Rust test regions — from a test attribute to the bare closing
+    // brace that returns brace depth to the attribute's depth. Tolerant of
+    // unbalanced braces inside fixture string literals.
+    if ext == "rs" && !include_tests {
+        let mut depth: usize = 0;
+        let mut region: Option<(usize, bool)> = None;
+        for (i, line) in lines.iter().enumerate() {
+            let trimmed = line.trim_start();
+            let opens = line.matches('{').count();
+            let closes = line.matches('}').count();
+            if let Some((base, opened)) = region.as_mut() {
+                mask[i] = true;
+                depth = depth.saturating_add(opens).saturating_sub(closes);
+                if depth > *base {
+                    *opened = true;
+                }
+                if *opened && depth <= *base && trimmed == "}" {
+                    region = None;
+                }
+                continue;
+            }
+            if is_test_attribute(trimmed) {
+                region = Some((depth, false));
+                mask[i] = true;
+                depth = depth.saturating_add(opens).saturating_sub(closes);
+                continue;
+            }
+            depth = depth.saturating_add(opens).saturating_sub(closes);
+        }
+    }
+
+    mask
+}
+
+fn multiline_http_call_kind(
+    lines: &[&str],
+    mask: &[bool],
+    i: usize,
+    ext: &str,
+) -> Option<SourceKind> {
+    if is_config_ext(ext) || mask[i] || !INFERENCE_ENDPOINT.is_match(lines[i]) {
         return None;
     }
 
     let start = i.saturating_sub(10);
     let end = (i + 11).min(lines.len());
-    let window = lines[start..end].join("\n");
+    // R-5 (TD-001): pair only against unsuppressed window lines so a
+    // commented-out transport cannot validate a real-looking endpoint.
+    let window = lines[start..end]
+        .iter()
+        .zip(&mask[start..end])
+        .filter(|(_, suppressed)| !**suppressed)
+        .map(|(line, _)| *line)
+        .collect::<Vec<_>>()
+        .join("\n");
     if !HTTP_TRANSPORT.is_match(&window) {
         return None;
     }
@@ -382,10 +520,22 @@ mod tests {
     use super::*;
 
     fn scan_rust(source: &str) -> Vec<InferenceAction> {
+        scan_rust_opts(source, false)
+    }
+
+    fn scan_rust_opts(source: &str, include_tests: bool) -> Vec<InferenceAction> {
         let root = Path::new("/workspace");
         let path = root.join("src/example.rs");
         let mut actions = Vec::new();
-        scan_file(root, &path, source, false, &mut actions);
+        scan_file(root, &path, source, false, include_tests, &mut actions);
+        actions
+    }
+
+    fn scan_py(source: &str) -> Vec<InferenceAction> {
+        let root = Path::new("/workspace");
+        let path = root.join("src/example.py");
+        let mut actions = Vec::new();
+        scan_file(root, &path, source, false, false, &mut actions);
         actions
     }
 
@@ -482,5 +632,133 @@ fn render_documentation() {
 
         assert_eq!(actions.len(), 1);
         assert_eq!(actions[0].temperature_precision, Some(2));
+    }
+
+    /// TD-001 F-1: doc-comment prose mentioning temperature must not be
+    /// treated as a call site (Pass 1 and Pass 4).
+    #[test]
+    fn doc_comment_temperature_mentions_are_suppressed() {
+        let source = r#"/// Env fallback docs: os.environ.get("TEMPERATURE").
+/// A pinned temperature=0 default is documented above.
+fn unrelated() {
+    let x = 1;
+    println!("{x}");
+}"#;
+
+        assert!(scan_rust(source).is_empty());
+    }
+
+    /// TD-001 F-2: lines defining the scanner's own regex literals contain
+    /// endpoint substrings and must not be flagged (near-verbatim copies of
+    /// the lines the self-audit flagged at src/discover.rs:68,69,77).
+    #[test]
+    fn regex_pattern_definition_lines_are_suppressed() {
+        let source = r#"static CALL_MARKERS: Lazy<Vec<(Regex, SourceKind)>> = Lazy::new(|| {
+    vec![
+        (Regex::new(r"(fetch|axios\.post|reqwest::)\([^)]*(chat/completions|/messages|generateContent|/responses\b)").unwrap(), SourceKind::ApiCall),
+        (Regex::new(r"curl\s+.*(chat/completions|/v1/messages|/api/generate|/responses\b)").unwrap(), SourceKind::ShellWrapper),
+    ]
+});
+
+/// Provider endpoints that identify inference requests.
+static INFERENCE_ENDPOINT: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"(?i)(chat/completions|/v1/messages\b|/api/generate\b|generateContent|/responses\b)").unwrap()
+});
+"#;
+
+        assert!(scan_rust(source).is_empty());
+    }
+
+    /// TD-001 F-3: fixture code inside #[test] regions must not be flagged.
+    #[test]
+    fn rust_test_regions_are_suppressed() {
+        let source = r##"#[test]
+fn detects_calls_in_fixtures() {
+    let actions = scan(
+        r#"fn answer() {
+    let body = serde_json::json!({"model":"demo","temperature":0.2});
+    let endpoint = "https://api.example.test/v1/chat/completions";
+    let output = Command::new("curl").arg(endpoint).output();
+}"#,
+    );
+
+    assert_eq!(actions.len(), 1);
+}
+"##;
+
+        assert!(scan_rust(source).is_empty());
+    }
+
+    /// TD-001 G-5: --include-tests re-includes test-region detection.
+    #[test]
+    fn include_tests_flag_restores_test_region_detection() {
+        let source = r##"#[test]
+fn detects_calls_in_fixtures() {
+    let actions = scan(
+        r#"fn answer() {
+    let body = serde_json::json!({"model":"demo","temperature":0.2});
+    let endpoint = "https://api.example.test/v1/chat/completions";
+    let output = Command::new("curl").arg(endpoint).output();
+}"#,
+    );
+
+    assert_eq!(actions.len(), 1);
+}
+"##;
+
+        let actions = scan_rust_opts(source, true);
+        assert_eq!(actions.len(), 1);
+        assert!(matches!(actions[0].temperature, TemperatureState::Explicit(v) if v == 0.2));
+    }
+
+    /// TD-001 G-2: suppression must not hide real call sites outside test
+    /// regions.
+    #[test]
+    fn real_call_sites_outside_test_regions_survive() {
+        let source = r#"use openai::Client;
+
+fn main() {
+    let client = Client::new();
+    let reply = client.chat.completions.create(
+        "gpt-4o-mini",
+        vec![("user", "hi")],
+    );
+    println!("{reply}");
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn fixture() {
+        let body = serde_json::json!({"model":"demo"});
+    }
+}
+"#;
+
+        let actions = scan_rust(source);
+        assert_eq!(actions.len(), 1);
+        assert_eq!(actions[0].name, "main");
+        assert!(matches!(actions[0].temperature, TemperatureState::Implicit));
+    }
+
+    /// TD-001 R-2: hash-family comment-only lines are suppressed while a
+    /// real call site in the same file is still detected exactly once.
+    #[test]
+    fn hash_family_comments_are_suppressed() {
+        let source = r#"# batch job docs: TEMPERATURE=0.9 is documented here
+import openai
+
+def run():
+    r = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": "hi"}],
+        temperature=0.7,
+    )
+    return r
+"#;
+
+        let actions = scan_py(source);
+        assert_eq!(actions.len(), 1);
+        assert!(matches!(actions[0].temperature, TemperatureState::Explicit(v) if v == 0.7));
     }
 }

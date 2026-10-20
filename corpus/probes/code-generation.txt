@@ -1,0 +1,2 @@
+def generate_code_fix(task):
+    return client.chat.completions.create(model='m', messages=task, temperature=0.7)

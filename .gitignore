@@ -14,3 +14,14 @@
 *.swo
 .DS_Store
 *.log
+
+# benchmark run artifacts (reproducible from config + seed)
+/results/
+
+.azusa/
+.kaptaind/
+.lwoodz/
+.uni/
+.traci/
+.orb
+.env

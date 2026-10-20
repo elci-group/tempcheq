@@ -17,11 +17,11 @@ cargo build --release       # release build -> target/release/tempcheq
 cargo run -- <path> [flags] # e.g. cargo run -- . --explain
 cargo clippy --all-targets -- -W clippy::all
 cargo audit                 # checks Cargo.lock against the RustSec advisory DB
-cargo test                  # no tests exist yet (see Known gaps below)
+cargo test                  # unit tests; discovery suppression is regression-locked here
 ```
 
 CLI flags (see `src/cli.rs`): `--explain`, `--benchmark`, `--fix` (+ `--yes`, `--fix-confidence`),
-`--watch`, `--report` (JSON to stdout). Path defaults to `.`.
+`--watch`, `--report` (JSON to stdout), `--include-tests`. Path defaults to `.`.
 
 `tempcheq report [path] [--out DIR] [--format md|html|both] [--title STR]` is a separate subcommand
 (not a flag) — it writes `report.md`/`report.html` files (default `--out tempcheq-report/`) rendered by
@@ -35,8 +35,15 @@ positional `path` because it matches a known subcommand name first.
 The pipeline is Discover → Classify → Hypothesise → Report/Benchmark/Fix, wired together in `src/run.rs`:
 
 1. **`discover.rs`** — walks the workspace with `walkdir`, regex-scans each file for temperature-related
-   patterns, and produces `Vec<InferenceAction>` (defined in `action.rs`). Scanning is line-based, not
-   AST-based, and runs in four passes over each file's lines:
+   patterns, and produces `Vec<InferenceAction>` (defined in `action.rs`). Before the four passes below,
+   `build_suppression_mask()` computes a per-line mask (TD-001, see `docs/directives/`): comment-only
+   lines and C-family block comments (S1), lines defining regex literals — `Regex::new(` / `re.compile(`
+   / `new RegExp(` — (S2), and Rust `#[test]`/`#[cfg(test)]` regions tracked by brace depth (S3,
+   re-included by `--include-tests`). Every pass skips masked lines, and the ±10-line cross-line
+   windows ("nearby explicit temperature", multiline HTTP pairing) ignore masked lines too, so a
+   comment mentioning temperature cannot hide a real call beside it. `nearest_name()` and
+   `context_window()` still see all lines. Scanning remains line-based, not AST-based, and runs in
+   four passes over each file's lines:
    - Pass 1: explicit values — `temperature: 0.7` / `.temperature(0.7)` / `TEMPERATURE=0.7` style
      assignments (`EXPLICIT_TEMP`, `BUILDER_TEMP`, `ENV_TEMP_ASSIGN`).
    - Pass 2: embedding-style calls (`.embeddings.create(`, etc.) → `TemperatureState::Inapplicable`.
@@ -90,7 +97,8 @@ The pipeline is Discover → Classify → Hypothesise → Report/Benchmark/Fix, 
 
 ## Known gaps
 
-- No test suite yet — all validation so far has been manual repro against scratch fixtures.
-- `discover.rs`'s `CALL_MARKERS` includes a broad `"model":` marker for arbitrary config files, which can
-  false-positive on any JSON/YAML/TOML file with an unrelated `model` key (e.g. a data-model schema).
-- `--benchmark` is a labeled simulation, not a real provider-grounded measurement.
+- Detection of `"model":` in arbitrary JSON/YAML/TOML data files (a data-model schema, an archived
+  transcript) can still false-positive; comment/test-region/regex-definition false positives are
+  suppressed by default since TD-001, but inline trailing comments are not.
+- `--benchmark` is a labeled simulation, not a real provider-grounded measurement; the eval-harness
+  design that would replace it lives in `docs/benchmark-design.md`.

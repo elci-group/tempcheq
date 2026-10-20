@@ -1,0 +1,15 @@
+palette:
+  primary: "#0077B6"
+  secondary: ["#00B4D8", "#90E0EF", "#F77F00", "#D62828"]
+  neutrals: ["#F7FBFC", "#03181F", "#5C7C87"]
+  color_tolerance: 24
+typography:
+  style: technical_modern
+  preferred_fonts: ["JetBrains Mono", "Inter", "system-ui"]
+assets:
+  social_card: { width: 1200, height: 630 }
+  thumbnail: { width: 1280, height: 720 }
+  min_whitespace: 0.25
+  max_file_kb: 500
+  coherence_min_palette: 50
+visual_motif: "A thermometer gauge sweeping between cold blue precision and hot red improvisation."

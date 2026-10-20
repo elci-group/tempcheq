@@ -38,6 +38,7 @@ fn __curly_original_main() -> Result<()> {
         explain: cli.explain,
         benchmark: cli.benchmark,
         json: cli.report,
+        include_tests: cli.include_tests,
     };
 
     if cli.watch {
@@ -45,7 +46,7 @@ fn __curly_original_main() -> Result<()> {
     }
 
     if cli.fix {
-        let entries = build_entries(&root)?;
+        let entries = build_entries(&root, cli.include_tests)?;
         let plans = fix::plan_fixes(&entries, cli.fix_confidence);
         fix::print_plan(&plans);
         if plans.is_empty() {
@@ -75,7 +76,7 @@ fn run_report(args: ReportArgs) -> Result<()> {
         bail!("path does not exist: {}", args.path.display());
     }
     let root = std::fs::canonicalize(&args.path)?;
-    let entries = build_entries(&root)?;
+    let entries = build_entries(&root, args.include_tests)?;
 
     std::fs::create_dir_all(&args.out)?;
 
@@ -123,7 +124,10 @@ fn main() {
     }
 
     if fields.is_empty() || fields.iter().all(|f| f.len() <= 1) {
-        __curly_original_main();
+        if let Err(e) = __curly_original_main() {
+            eprintln!("error: {e}");
+            std::process::exit(1);
+        }
         return;
     }
 

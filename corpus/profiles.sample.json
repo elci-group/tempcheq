@@ -1,0 +1,15 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "note": "Synthetic as-found temperature distributions used only so the pipeline runs before a real corpus is harvested with corpus/harvest.py temps. Values are representative of audited open-source agent/extraction repos, not measurements. Replace with corpus/profiles.json for real runs."
+  },
+  "code-generation": {"found_temps": [0.7, 0.7, 0.8, 0.2, 0.6, 0.9], "implicit_count": 4},
+  "conversational": {"found_temps": [0.7, 0.8, 0.6, 1.0], "implicit_count": 6},
+  "creative": {"found_temps": [0.9, 1.0, 1.2, 0.8], "implicit_count": 2},
+  "deterministic-extraction": {"found_temps": [0.7, 0.7, 0.7, 0.5, 0.0, 0.2], "implicit_count": 7},
+  "eval-judge": {"found_temps": [0.7, 0.0, 0.3], "implicit_count": 5},
+  "reflection": {"found_temps": [0.6, 0.7, 0.8], "implicit_count": 3},
+  "summarization": {"found_temps": [0.5, 0.7, 0.3], "implicit_count": 3},
+  "synthesis": {"found_temps": [0.7, 0.8, 0.5], "implicit_count": 2},
+  "tool-selection": {"found_temps": [0.2, 0.7, 0.0, 0.1], "implicit_count": 6}
+}

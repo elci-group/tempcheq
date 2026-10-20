@@ -46,6 +46,12 @@ pub struct Cli {
     /// Emit a machine-readable JSON report to stdout instead of the table.
     #[arg(long)]
     pub report: bool,
+
+    /// Re-include inference calls inside #[test] regions. By default
+    /// TempCheq suppresses test regions, comment-only lines, and regex
+    /// pattern definitions to avoid false positives (see TD-001).
+    #[arg(long)]
+    pub include_tests: bool,
 }
 
 #[derive(Subcommand, Debug)]
@@ -73,6 +79,10 @@ pub struct ReportArgs {
     /// Report title. Defaults to the workspace path.
     #[arg(long)]
     pub title: Option<String>,
+
+    /// Re-include inference calls inside #[test] regions (see TD-001).
+    #[arg(long)]
+    pub include_tests: bool,
 }
 
 #[derive(ValueEnum, Clone, Copy, Debug, PartialEq, Eq)]
