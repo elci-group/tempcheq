@@ -113,6 +113,16 @@ Discover → Classify → Hypothesise → Report/Benchmark/Fix:
 Full architecture notes — module boundaries, the specific regexes, and the gotchas that come with
 line-based rather than AST-based scanning — live in `CLAUDE.md`.
 
+Rust HTTP requests to known inference endpoints are detected through `ureq::post`
+and reqwest async/blocking client `.post(...)` builders, including multiline URLs
+and `serde_json::json!` bodies. Omitted temperatures are reported as `default`;
+this does not assume a numeric provider default. Xact-style
+`format!("{BASE_URL}/messages")` also requires nearby JSON `model` and `messages`
+keys. Detection uses a ±10-line window, not Rust type or data-flow resolution:
+renamed imports, distant URL/body construction, wrappers and dynamically computed
+paths may be missed; adjacent unrelated calls can be conflated. Nonliteral
+temperatures are not resolved.
+
 ## Known limitations
 
 - Detection is regex/line-based, not AST-based. To cut the worst false

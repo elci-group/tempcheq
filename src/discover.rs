@@ -232,6 +232,7 @@ fn scan_file(
                     marker.is_match(line).then_some(*kind)
                 }
             })
+            .or_else(|| rust_http_call_kind(&lines, &mask, i, ext))
             .or_else(|| multiline_http_call_kind(&lines, &mask, i, ext));
 
         let Some(kind) = matched_kind else {
@@ -396,6 +397,49 @@ fn build_suppression_mask(lines: &[&str], ext: &str, include_tests: bool) -> Vec
     mask
 }
 
+// Rust's format!("{BASE_URL}/messages") hides the /v1 prefix. Accept
+// that shorter suffix only alongside a JSON inference body. Keep this
+// bounded like the existing HTTP detector; this is not name resolution.
+fn rust_http_call_kind(
+    lines: &[&str],
+    mask: &[bool],
+    i: usize,
+    ext: &str,
+) -> Option<SourceKind> {
+    static POST: Lazy<Regex> = Lazy::new(|| {
+        Regex::new(r"(?:\bureq::post|\.post)\s*\(").unwrap()
+    });
+    static MESSAGES: Lazy<Regex> = Lazy::new(|| {
+        Regex::new(r#"/messages(?:[?\"/]|$)"#).unwrap()
+    });
+    if ext != "rs" || mask[i] {
+        return None;
+    }
+    let endpoint = INFERENCE_ENDPOINT.is_match(lines[i]);
+    if !endpoint && !MESSAGES.is_match(lines[i]) {
+        return None;
+    }
+    let start = i.saturating_sub(10);
+    let end = (i + 11).min(lines.len());
+    let window = lines[start..end].iter().zip(&mask[start..end])
+        .filter(|(_, suppressed)| !**suppressed)
+        .map(|(line, _)| *line).collect::<Vec<_>>().join("\n");
+    let has_reqwest = lines.iter().zip(mask).any(|(line, suppressed)| {
+        !*suppressed && (line.contains("reqwest::") || line.contains("use reqwest;"))
+    });
+    if !POST.is_match(&window)
+        || (!window.contains("ureq::post") && !has_reqwest)
+    {
+        return None;
+    }
+    if !endpoint && !(window.contains("json!")
+        && window.contains("\"model\"") && window.contains("\"messages\""))
+    {
+        return None;
+    }
+    Some(SourceKind::ApiCall)
+}
+
 fn multiline_http_call_kind(
     lines: &[&str],
     mask: &[bool],
@@ -537,6 +581,75 @@ mod tests {
         let mut actions = Vec::new();
         scan_file(root, &path, source, false, false, &mut actions);
         actions
+    }
+
+    #[test]
+    fn detects_xact_ureq_calls_with_implicit_temperature() {
+        for source in [
+            include_str!("../tests/fixtures/xact_anthropic.rs.txt"),
+            include_str!("../tests/fixtures/xact_openai_compatible.rs.txt"),
+        ] {
+            let actions = scan_rust(source);
+            assert_eq!(actions.len(), 1, "{actions:?}");
+            let action = &actions[0];
+            assert_eq!(action.source_kind, SourceKind::ApiCall);
+            assert!(matches!(action.temperature, TemperatureState::Implicit));
+            assert!(source.lines().nth(action.line - 1).unwrap().contains("ureq::post"));
+        }
+    }
+
+    #[test]
+    fn xact_explicit_temperature_is_not_duplicated_as_default() {
+        for source in [
+            include_str!("../tests/fixtures/xact_anthropic.rs.txt"),
+            include_str!("../tests/fixtures/xact_openai_compatible.rs.txt"),
+        ] {
+            let source = source.replace("\"model\": model,", "\"model\": model, \"temperature\": 0.20,");
+            let actions = scan_rust(&source);
+            assert_eq!(actions.len(), 1, "{actions:?}");
+            assert!(matches!(actions[0].temperature, TemperatureState::Explicit(v) if v == 0.2));
+            assert_eq!(actions[0].temperature_precision, Some(2));
+        }
+    }
+
+    #[test]
+    fn detects_reqwest_json_builders_and_explicit_temperature_once() {
+        for constructor in ["reqwest::Client::new()", "reqwest::blocking::Client::new()"] {
+            for endpoint in ["/v1/messages", "/chat/completions"] {
+                for temperature in ["", ", \"temperature\": 0.25"] {
+                    let source = format!(r#"fn run() {{
+    let client = {constructor};
+    let body = serde_json::json!({{"model": model, "messages": []{temperature}}});
+    let response = client.post(
+        &format!("{{base_url}}{endpoint}")
+    ).json(&body).send();
+}}"#);
+                    let actions = scan_rust(&source);
+                    assert_eq!(actions.len(), 1, "{source}: {actions:?}");
+                    if temperature.is_empty() {
+                        assert_eq!(actions[0].source_kind, SourceKind::ApiCall);
+                        assert!(matches!(actions[0].temperature, TemperatureState::Implicit));
+                    } else {
+                        assert!(matches!(actions[0].temperature, TemperatureState::Explicit(v) if v == 0.25));
+                        assert_eq!(actions[0].temperature_precision, Some(2));
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn rust_http_negative_controls() {
+        for source in [
+            r#"fn metadata() { ureq::get("https://api.test/v1/models").call(); }"#,
+            r#"fn metadata() { ureq::get("https://api.test/v1/messages").call(); }"#,
+            r#"fn unrelated() { ureq::post("https://api.test/messages").send_json(json!({"text": "hi"})); }"#,
+            r#"const URL: &str = "https://api.test/v1/messages";"#,
+            r#"// ureq::post("https://api.test/v1/messages");"#,
+            r#"fn unrelated() { client.post("https://api.test/chat/completions"); }"#,
+        ] {
+            assert!(scan_rust(source).is_empty(), "{source}");
+        }
     }
 
     #[test]
